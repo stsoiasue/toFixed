@@ -1,0 +1,25 @@
+<script src='simpletest.js'></script>
+<script src='accounting.js'></script>
+<script>
+
+	// tests:
+		// it should round 10.235 to 10.24
+		// it should round 1.005 to 1.01
+		// it should round 123.345 to 123.35
+		// it should round 0.615 to 0.62
+
+	tests({
+		'it should round 10.235 to 10.24': function() {
+			eq(accounting.toFixed(10.235, 2), "10.24");
+		},
+		'it should round 1.005 to 1.01': function() {
+			eq(accounting.toFixed(1.005, 2), "1.01");
+		},
+		'it should round 123.345 to 123.35': function() {
+			eq(accounting.toFixed(123.345, 2), "123.35");
+		},
+		'it should round 0.615 to 0.62': function() {
+			eq(accounting.toFixed(.615, 2), "0.62");
+		}
+	})
+</script>
