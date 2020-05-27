@@ -224,20 +224,21 @@
 	 * Fixes binary rounding issues (eg. (0.615).toFixed(2) === "0.61") that present
 	 * problems for accounting- and finance-related software.
 	 */
-
 	var toFixed = lib.toFixed = function(value, precision) {
 		precision = checkPrecision(precision, lib.settings.number.precision);
 		var unformattedValue = lib.unformat(value).toString();
+		var digitsAfterDecimal = unformattedValue.match(/\.(.*)/)[1].length;
 		
+		// append additional zeros if precision is greater thank digits after decimal
+		if (digitsAfterDecimal < precision) {
+			var additionalZeros = new Array((precision - digitsAfterDecimal) + 1).join("0");
+			unformattedValue += additionalZeros;
+		}
+
 		// regEx to capture text before decimal and "precision" spaces after
-		var beforeDecimalRegEx = new RegExp(".*\\..{" + precision + "}", ["g"]);
-		var beforeDecimalCapture = unformattedValue.match(beforeDecimalRegEx)[0];
-		
-		// regEx to capture text after beforeDecimalCapture
-		var afterDecimalRegEx = new RegExp(beforeDecimalCapture + "(.*)", ["g"]);
-		
-		var digitsBeforeDecimal = beforeDecimalCapture.replace('.','');
-		var digitsAfterDecimal = unformattedValue.replace(afterDecimalRegEx, '$1');
+		var decimalSplitRegEx = new RegExp("(.*\\..{" + precision + "})(.*)");
+		var digitsBeforeDecimal = unformattedValue.match(decimalSplitRegEx)[1].replace('.','');
+		var digitsAfterDecimal = unformattedValue.match(decimalSplitRegEx)[2];
 		var numToRound = digitsBeforeDecimal + '.' + digitsAfterDecimal;
 
 		var roundedNum = Math.round(numToRound).toString();
